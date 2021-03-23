@@ -4,7 +4,7 @@ Authors: Kristian Förster, Philipp Kraft
 
 It is published as free software under [GPLv3](http://www.gnu.org/licenses/gpl.html).
 
-This repository includes a Python implementation for a numerical flow model representing green roofs (Förster et al, in prep.). The class is inherited from a Catchment Modelling Framework project (CMF), which is a framework to develop hydrological models of arbitrary complexity (Kraft et al., 2011). The GreenRoof class represents Darcy and Richards flow and surface runoff (diffusive wave approximation). See [requirements.txt](requirements.txt) for a list of required Python packages. A [Jupyter notebook](Greenroof_test.ipynb) demonstrates how the GreenRoof class works in principle.
+This repository includes a Python implementation for a numerical flow model representing green roofs (Förster et al, in prep.). The class is inherited from a Catchment Modelling Framework project ([CMF](https://philippkraft.github.io/cmf/)), which is a framework to develop hydrological models of arbitrary complexity (Kraft et al., 2011). The GreenRoof class represents Darcy and Richards flow and surface runoff (diffusive wave approximation). See [requirements.txt](requirements.txt) for a list of required Python packages. A [Jupyter notebook](Greenroof_test.ipynb) demonstrates how the GreenRoof class works in principle.
 
 ## References
 Förster, K., Westerholt, D., Kraft, P., Lösken, G. (in prep.). Unprecedented retention capabilities of extensive green roofs – New design approaches and an open-source model.
