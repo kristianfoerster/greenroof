@@ -9,7 +9,7 @@ import numpy as np
 
 class GreenRoof(cmf.project):
     """
-    The GreenRoof class is a CMF implementation ro compute Darcy and Richards
+    The GreenRoof class is a CMF implementation to compute Darcy and Richards
     flow in a green roof.
     """
     def __init__(self, init_state=None,dt_min=0.25, width=1., length=20, nl=5, 
