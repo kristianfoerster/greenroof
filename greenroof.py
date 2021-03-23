@@ -129,7 +129,7 @@ class GreenRoof(cmf.project):
         Parameters
         ----------
         init_state : List, optional
-            List of two arrays (1st: x positioning of observations, 1nd: eater level observed at this position).
+            List of two arrays (1st: x positioning of observations, 1nd: water level observed at this position).
 
         Returns
         -------
@@ -175,7 +175,7 @@ class GreenRoof(cmf.project):
 
     def _create_cells(self,d_init_pot=0.3):
         """
-        Creates an obejct for each cell which consists of vertical layers
+        Creates an object for each cell which consists of vertical layers
 
         Parameters
         ----------
@@ -214,7 +214,7 @@ class GreenRoof(cmf.project):
 
     def _define_fluxes(self):
         """
-        Defines process description for fluses, meteorological forcing and boundary conditions (outlets).
+        Defines process description for fluxes, meteorological forcing and boundary conditions (outlets).
 
         Returns
         -------
@@ -310,7 +310,7 @@ class GreenRoof(cmf.project):
         resdf : pd.DataFrame
             Model results provided as time series (DatetimeIndex)
             Column 0 ('Darcy flow'): Modelled outflow (Darcy flow) [mm/min].
-            Column 1 ('Surface runoff'): Modelled outlow (Surface runoff) [mm/min].
+            Column 1 ('Surface runoff'): Modelled outflow (Surface runoff) [mm/min].
             Column 2 ('Water level'): Time series of lists including the water level along horizontal axis [m].
             Column 3 ('Ponding'): Time series of lists including the ponding on the surface along horizontal axis [m].
 
