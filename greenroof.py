@@ -15,7 +15,7 @@ class GreenRoof(cmf.project):
     def __init__(self, init_state=None,dt_min=0.25, width=1., length=20, nl=5, 
                  dz=0.02, rheight=0.,depth=0.08, ksat = 1500, 
                  porosity = 0.5, b=5, mannings_n=0.08, duration=180, 
-                 d_init_pot=0.3):
+                 d_init_pot=0.3, distr_rain=False):
         """
         Constructor method of the GreenRoof class, which creates a model,
         based on a number of paramters.
@@ -51,6 +51,8 @@ class GreenRoof(cmf.project):
             Duration of the simulation period [min]. The default is 180.
         d_init_pot : float, optional
             Delta in matric potential subtracted from the initial value (0.3 would subtract 0.3 from the standard value in each layer) [m]. The default is 0.3.
+        distr_rain : bool, optional
+            if set true, for each cell a separate rainfall station is created.
 
         Returns
         -------
@@ -67,7 +69,7 @@ class GreenRoof(cmf.project):
         self._define_geometry(init_state)
         self._set_parameters(ksat,porosity,b,mannings_n)
         self._create_cells(d_init_pot)
-        self._define_fluxes()
+        self._define_fluxes(distr_rain)
                 
     def _set_time(self,dt_min,duration):
         """
@@ -147,7 +149,7 @@ class GreenRoof(cmf.project):
         
         self.init_z_interpol+=self.bottom        
         
-    def _set_parameters(self, ksat = 1500, porosity = 0.68,
+    def _set_parameters(self, ksat = 1500, porosity = 0.50,
                  b=5,mannings_n=0.08):
         """
         This function sets all model parameters required for simulations.
@@ -212,17 +214,25 @@ class GreenRoof(cmf.project):
             c.surfacewater.puddledepth = 0.001
             c.surfacewater.nManning = self.mannings_n        
 
-    def _define_fluxes(self):
+    def _define_fluxes(self, distr_rain=False):
         """
         Defines process description for fluxes, meteorological forcing and boundary conditions (outlets).
-
+        Parameters
+        ----------
+        distr_rain : bool, optional
+            if set true, for each cell a separate rainfall station is created.
+            
         Returns
         -------
         None.
 
         """
         # meteorology
-        self.rainfall_stations.add('', 0.0, (0, 0, 0))
+        if distr_rain:
+            for ci in self.cells:
+                self.rainfall_stations.add('', 0.0, (ci.x, 0, 0))
+        else:
+            self.rainfall_stations.add('', 0.0, (0, 0, 0))
         self.use_nearest_rainfall()
         self.ET = []
 
@@ -240,7 +250,7 @@ class GreenRoof(cmf.project):
             cmf.Darcy(li, self.outlet, self.width)
         cmf.DiffusiveSurfaceRunoff(self[0].surfacewater, self.outlet_s, self.width)
 
-    def set_design_rain(self, rain_duration=15, rain_amount=27):
+    def set_design_rain(self, rain_duration=15, rain_amount=27, target=0):
         """
         Defines a uniform rainfall input.
 
@@ -250,6 +260,8 @@ class GreenRoof(cmf.project):
             Rainfall duration [min]. The default is 15.
         rain_amount : float, optional
             Rainfall total [mm]. The default is 27.
+        target: int optional
+            index of rainfall station to be considered for rainfall
 
         Returns
         -------
@@ -260,9 +272,9 @@ class GreenRoof(cmf.project):
         while data.end < self.tstart + rain_duration*cmf.min:
             data.add(rain_amount * cmf.day/(rain_duration* cmf.min))
         data.add(0)
-        self.rainfall_stations[0].data = data
+        self.rainfall_stations[target].data = data
 
-    def set_rain(self, fromarray):
+    def set_rain(self, fromarray, target=0):
         """
         Sets rainfall from an array of values (temporal resolution 1 minute).
 
@@ -270,6 +282,8 @@ class GreenRoof(cmf.project):
         ----------
         fromarray : np.array
             Rainfall intensities [mm/min].
+        target: int optional
+            index of rainfall station to be considered for rainfall
 
         Returns
         -------
@@ -277,7 +291,7 @@ class GreenRoof(cmf.project):
 
         """
         data = cmf.timeseries.from_array(self.tstart,cmf.min,fromarray*1440)
-        self.rainfall_stations[0].data = data
+        self.rainfall_stations[target].data = data
 
     def _to_liters_per_timestep(self,value):
         """
