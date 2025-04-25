@@ -315,7 +315,11 @@ class GreenRoof(cmf.project):
             Column 3 ('Ponding'): Time series of lists including the ponding on the surface along horizontal axis [m].
 
         """
-        solver = cmf.CVodeIntegrator(self, 1e-9)
+        # make model compatible to cmf 1.6 and 2.0
+        if int(cmf.__version__.split('.')[0])>=2:
+            solver = cmf.CVodeKLU(self, 1e-9)
+        else:
+            solver = cmf.CVodeIntegrator(self, 1e-9)
         list_t = list()
         list_q = list()
         list_qs = list()
