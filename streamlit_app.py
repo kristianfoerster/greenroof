@@ -21,22 +21,24 @@ k = st.sidebar.number_input("Hydraulic conductivity k [m/d]", value=1600)
 b = st.sidebar.number_input("Brooks-Corey parameter b", value=5.5)
 n = st.sidebar.number_input("Manning’s roughness n", value=0.08)
 length = st.sidebar.slider("Roof length [m]", 5, 20, 10)
-slope = st.sidebar.slider("Slope [%]", 0.0, 3.0, 1.0)
-
+slope = st.sidebar.slider("Slope [%]", 0.0, 3.0, 1.0, format='%.1f')
+d_init = st.sidebar.number_input("Delta in matrix potential (initial condition) [m]", value=0.15)
 rainfall = st.sidebar.number_input("Rainfall total [mm]", value=27)
 duration = st.sidebar.slider("Rainfall duration [min]", 1, 30, 15, format='%i')
 
 
-rheight=length*slope/100.
+
 
 # Run the model
 if st.button("Run Simulation"):
     st.subheader("Simulation Results")
+    
 
     try:
         # Initialize and run the model
+        rheight=length*slope/100.
         model = GreenRoof(ksat=k, porosity=0.5, b=b, mannings_n=n, 
-                          length=length, rheight=rheight, d_init_pot=0.15,
+                          length=length, rheight=rheight, d_init_pot=d_init,
                           duration=60)
         
         model.set_design_rain(rain_duration=duration, rain_amount=rainfall)
